@@ -9,6 +9,81 @@ Vibe coding is building software by describing what you want in plain language a
 
 ---
 
+## The 7 Key Insights
+
+Before diving into the how-to, here are the most important lessons from building a real app this way.
+
+### 1. You Are the Product Manager, Not the Developer
+
+This is the single most important mindset shift. You decide *what* to build — Claude handles *how*. Describe what you want in plain language. Report bugs by what you see, not what you think is wrong in the code.
+
+- "Make the button bigger and blue" — not "change the CSS padding"
+- "When I click save, nothing happens" — not "the onClick handler isn't firing"
+- "I want to be able to scrub through the video frame by frame" — not "add a frame step function"
+
+Claude will choose the technology (React, Vite, Tailwind, etc.) for you — and that's fine. You don't need to understand or even know what these are. Trust the choices and focus on the result.
+
+### 2. Plan Before You Build
+
+Spending time in plan mode upfront saves hours of pain later. The most painful moment in our build was pivoting from a web app to a desktop app mid-development — it left behind broken assumptions and cascading issues that were hard to untangle.
+
+- Follow a phased approach: set up `CLAUDE.md` first → create a plan second → build third. Resist the urge to say "just build it" all at once. Each phase builds on the last.
+- Use plan mode (`Shift+Tab`) for anything beyond a small tweak
+- Review the plan carefully — make sure big decisions (what kind of app, how files are handled, etc.) are right *before* code gets written
+- Tell Claude to save the plan to your project folder so you can reference it later
+- When the plan is approved, Claude clears context for a fresh start — this is a good thing
+
+### 3. Silent Git Is Your Safety Net
+
+One plain English sentence gave us automatic save points, rollback capability, and version tagging — without learning a single git concept.
+
+Just tell Claude: *"Update your instructions to use git for version control, but do it automatically and hide the details from me since I'm not familiar with git."*
+
+This is an example of a powerful trick: **you can ask Claude to update its own instructions.** Think of `CLAUDE.md` as training your assistant on the job — you can shape how Claude behaves just by describing what you want in plain language.
+
+Claude will silently commit your progress after every meaningful change. When you reach a good stable state, ask Claude to "tag this version" — it creates a named save point you can return to if future changes break things.
+
+### 4. Know When to Interrupt and Redirect
+
+`Esc` is your most powerful key. Claude will sometimes:
+- Over-explain technical details you don't need
+- Go down the wrong path
+- Get stuck trying the same fix over and over
+
+Don't wait for it to finish. Press `Esc`, then redirect: "That's not working. Let's try a different approach." Or use `/rewind` to roll back and start that part over. Or `/clear` to start completely fresh.
+
+### 5. Test After Every Change — Especially "Small" Ones
+
+The first version of your app will look impressive but have issues. That's normal — don't be discouraged. The magic isn't the first attempt, it's how fast you can iterate to a working version.
+
+Even simple visual tweaks can accidentally break core features. After each round of changes:
+- Test all the main things your app does, not just the thing that changed
+- If something broke, tell Claude immediately — don't let issues pile up
+- Show Claude what's wrong visually — you can paste or drag screenshots into Claude Code, which is way easier than describing UI problems in words
+- This is where silent git saves you — if a cosmetic change breaks something important, you can roll back
+
+### 6. You Don't Need to Touch the Terminal
+
+If Claude suggests commands to run, you don't need to copy/paste them yourself. Just say "run that for me." Claude can:
+- Install dependencies
+- Start the app
+- Run tests
+- Handle build commands
+
+Your job is to approve the commands when Claude asks permission. Don't freeze when you see a permission prompt — things like `npm install` and `npm run dev` are safe. Claude will explain what it wants to do before running it.
+
+### 7. Manage Your Context Window
+
+This is an underrated skill that directly affects how well Claude performs. A cluttered context window means a less capable Claude.
+
+- **`/compact`** — Summarize the conversation to free up space without losing everything
+- **`/clear`** — Start completely fresh when things get messy
+- **`/usage`** — Check how much daily usage you have left
+- **Keep `CLAUDE.md` concise** — It loads into every conversation, so every extra line costs context
+- **Fresh context after planning** — When Claude asks to clear context before executing a plan, say yes
+
+---
+
 ## Prerequisites
 
 ### Install Before the Workshop
@@ -107,6 +182,24 @@ Once Claude starts building:
 
 ---
 
+## How to Talk to Claude
+
+### Do This
+- Describe what you want as a user: *"Make the button bigger and blue"*
+- Report bugs by behavior: *"When I click save, nothing happens"*
+- Batch related issues: *"Here are three things that need fixing: ..."*
+- Ask Claude to run commands for you: *"Run that for me"*
+- Paste or drag screenshots to show visual problems
+- Interrupt with `Esc` if Claude is over-explaining technical details
+
+### Don't Do This
+- Don't try to write code or give technical instructions
+- Don't make one tiny change at a time — batch feedback
+- Don't let Claude ramble without interrupting — redirect it
+- Don't change major architectural decisions mid-build (e.g., switching from web app to desktop app) — this causes cascading issues. Get the big decisions right during planning.
+
+---
+
 ## Essential Commands & Shortcuts
 
 ### Keyboard Shortcuts
@@ -149,55 +242,6 @@ This is NOT git — it's Claude Code's own checkpoint system. It only tracks cha
 
 ---
 
-## How to Talk to Claude (Communication Tips)
-
-### Do This
-- Describe what you want as a user: *"Make the button bigger and blue"*
-- Report bugs by behavior: *"When I click save, nothing happens"*
-- Batch related issues: *"Here are three things that need fixing: ..."*
-- Ask Claude to run commands for you: *"Run that for me"*
-- Interrupt with `Esc` if Claude is over-explaining technical details
-
-### Don't Do This
-- Don't try to write code or give technical instructions
-- Don't make one tiny change at a time — batch feedback
-- Don't let Claude ramble without interrupting — redirect it
-- Don't change major architectural decisions mid-build (e.g., switching from web app to desktop app) — this causes cascading issues. Get the big decisions right during planning.
-
----
-
-## Lessons Learned (From Building a Real App)
-
-These lessons come from building a video annotation tool with Claude Code — a full desktop app with video playback, frame annotation, comment capture, and report export.
-
-### What Went Well
-- **Strong opening prompt** led to a solid `CLAUDE.md` and plan
-- **Plan mode** helped organize a complex app into manageable phases
-- **Silent git** worked great — automatic save points without needing to understand version control
-- **Asking Claude to run commands** saved time vs. copying/pasting into the terminal
-- **Claude auto-testing** its own changes caught issues early
-- **Tagging a good version** created a safe rollback point before making risky changes
-- First version looked cool and was usable after just a few iterations
-
-### What Was Painful
-- **Mid-build architecture pivot** (web to desktop app) left behind broken assumptions and was hard to untangle
-- **UI polish broke core features** — cosmetic tweaks can have unintended side effects
-- **Claude got stuck in loops** — tried the same fix multiple times without success. Solution: `/rewind` or `/clear` and re-explain differently
-- **Claude over-explained technical details** — had to interrupt and redirect to keep things simple
-- **File handling complexity** — browser-based apps can't freely access the filesystem; desktop apps (Electron) can, but are harder to build and package
-
-### The Development Flow
-
-1. Describe what you want → Claude creates `CLAUDE.md`
-2. Review and refine `CLAUDE.md` (keep it concise!)
-3. Ask Claude to plan → review the plan
-4. Claude builds → you test → report issues → Claude fixes → repeat
-5. Get to a working state → tag the version
-6. Polish UI carefully, testing core features after each change
-7. Export or package when ready
-
----
-
 ## Settings & Configuration
 
 ### User-Level Settings
@@ -227,31 +271,44 @@ Claude Code's settings file lives at:
 
 ---
 
-## What You Built (Case Study)
+## Lessons Learned (From Building a Real App)
 
-The example app built during this workshop is a **Video Annotator** — a desktop app for reviewing long procedure recordings (30-60 minutes) to find and document software bugs.
+These lessons come from building a **Video Annotator** with Claude Code — a full desktop app with video playback, frame annotation, comment capture, and report export. Built in 17 iterative steps over a single session by a non-coder.
 
-### Features
-- Drag-and-drop video loading
-- Custom video controls with frame-by-frame stepping and playback speed
-- Draw rectangles on video frames to highlight specific areas
-- Add timestamped comments to annotations
-- Sidebar showing all annotations grouped by timestamp
-- Auto-save to prevent data loss
-- Export HTML reports with annotated screenshots (ready for JIRA)
-- Keyboard shortcuts for efficient workflow
-- Available as a desktop app (macOS DMG, Windows installer)
+### What Went Well
+- **Strong opening prompt** led to a solid `CLAUDE.md` and plan
+- **Plan mode** helped organize a complex app into manageable phases
+- **Silent git** worked great — automatic save points without needing to understand version control
+- **Asking Claude to run commands** saved time vs. copying/pasting into the terminal
+- **Claude auto-testing** its own changes caught issues early
+- **Tagging a good version** created a safe rollback point before making risky changes
+- First version looked cool and was usable after just a few iterations
 
-### Tech Stack (Claude Chose This)
-- **React** — User interface framework
-- **Vite** — Development server and build tool
-- **Tailwind CSS** — Styling
-- **Electron** — Desktop app packaging
-- No database — everything saved as JSON files locally
+### What Was Painful
+- **Mid-build architecture pivot** (web to desktop app) left behind broken assumptions and was hard to untangle
+- **UI polish broke core features** — cosmetic tweaks can have unintended side effects
+- **Claude got stuck in loops** — tried the same fix multiple times without success. Solution: `/rewind` or `/clear` and re-explain differently
+- **Claude over-explained technical details** — had to interrupt and redirect to keep things simple
+- **File handling complexity** — browser-based apps can't freely access the filesystem; desktop apps (Electron) can, but are harder to build and package
 
-### How It Was Built
-17 iterative steps over a single session. See the [build log](build-log.md) for the full chronological story.
+### The Development Flow
+
+1. Describe what you want → Claude creates `CLAUDE.md`
+2. Review and refine `CLAUDE.md` (keep it concise!)
+3. Ask Claude to plan → review the plan
+4. Claude builds → you test → report issues → Claude fixes → repeat
+5. Get to a working state → tag the version
+6. Polish UI carefully, testing core features after each change
+7. Export or package when ready
+
+### The App That Was Built
+
+A desktop video annotation tool with: drag-and-drop video loading, frame-by-frame stepping, rectangle annotations with comments, timestamped sidebar, auto-save, HTML report export for JIRA, and keyboard shortcuts. Available as macOS DMG and Windows installer. Claude chose React + Vite + Tailwind + Electron — the builder never needed to know what any of those are.
+
+See the [build log](build-log.md) for the full chronological story.
 
 ---
+
+*The bottom line: think like a product manager, plan before you build, and let Claude handle everything technical. Your superpower is knowing what you want — Claude's superpower is knowing how to build it.*
 
 *Built with [Claude Code](https://claude.ai/code) — no coding experience required.*
